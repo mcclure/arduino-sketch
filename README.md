@@ -1,0 +1,1 @@
+Here are some Arduino sketches I wrote for the Stemtera breadboard. They are here for backup purposes. You are not granted any specific rights to this code but if you want anything here open sourced feel free to ask <<andi.m.mcclure@gmail.com>>
