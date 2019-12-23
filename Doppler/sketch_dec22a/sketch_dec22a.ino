@@ -1,7 +1,21 @@
+#define NOLED
+#ifndef NOLED
+#include <ICEClass.h>
+ICEClass ice40;
+#endif
+#define SQUARE 9
+#define BEAT 8
 void setup() {
+#ifndef NOLED
+  ice40.upload(); // Upload BitStream Firmware to FPGA -> see variant.h
+  delay(100);
+  ice40.initSPI();  // start SPI runtime Link to FPGA
+#endif
   // put your setup code here, to run once:
   pinMode(PIN_DAC0,OUTPUT);
   pinMode(PIN_DAC1,OUTPUT);
+  pinMode(SQUARE,OUTPUT);
+  pinMode(BEAT,OUTPUT);
   dacInit();
 }
 
@@ -17,6 +31,8 @@ void loop() {
   static uint16_t seed = 18131;  // Random seed
   static uint16_t seed2 = 89;  // Random seed2
   static int seq = 0;
+  static int i = 0;
+  static int i2 = -1;
 
   uint16_t lastEnv = env;
   env-=4;
@@ -30,13 +46,21 @@ void loop() {
     //} else {
       w /= ((rnd % 4)+2);
     }
-    if (w > 2048 || w < 16 || seq%16==0) w = 400;
+    if (w > 2048 || w < 16 || seq%16==0) w = ((seq / 32)%2 ? 362 : 400);
     seq++;
     w2 /= 2;
     if (w2 < 128)
       w2 = 2048*4;
+    if (seq%2) i2 = 127;
+#ifndef NOLED
+    ice40.sendSPI16(w);
+#endif
   }
   osc+=w;
   env2 -= w2;
+  digitalWrite(SQUARE, (i/200)%2 ? HIGH : LOW);
+  digitalWrite(BEAT, i2>=0 ? HIGH : LOW);
+  i++; if (i == 400) i = 0;
+  if (i2 >= 0) i2--;
   dacWrite(osc,env);
 }
