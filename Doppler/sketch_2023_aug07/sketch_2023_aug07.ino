@@ -12,7 +12,7 @@ ICEClass ice40;
 void setup() {
 #ifndef NOLED
   ice40.upload(build_top_bin,build_top_bin_len); // Upload BitStream Firmware to FPGA -> see variant.h
-  ice40.upload(); // Upload BitStream Firmware to FPGA -> see variant.h
+  //ice40.upload(); // Upload BitStream Firmware to FPGA -> see variant.h
   delay(100);
   //ice40.initSPI();  // start SPI runtime Link to FPGA
 #endif
