@@ -1,10 +1,13 @@
-#define NOLED
+//#define NOLED
 #ifndef NOLED
 #include <ICEClass.h>
 ICEClass ice40;
 #endif
+//#define PIN_DAC0 39
+//#define PIN_DAC1 39
+#define BEAT 9
 #define SQUARE 9
-#define BEAT 8
+#define VCA 7
 void setup() {
 #ifndef NOLED
   ice40.upload(); // Upload BitStream Firmware to FPGA -> see variant.h
@@ -16,6 +19,7 @@ void setup() {
   pinMode(PIN_DAC1,OUTPUT);
   pinMode(SQUARE,OUTPUT);
   pinMode(BEAT,OUTPUT);
+  pinMode(VCA,OUTPUT);
   dacInit();
 }
 
@@ -51,7 +55,7 @@ void loop() {
     w2 /= 2;
     if (w2 < 128)
       w2 = 2048*4;
-    if (seq%2) i2 = 127;
+    if (seq%2) i2 = 4095;
 #ifndef NOLED
     ice40.sendSPI16(w);
 #endif
@@ -60,6 +64,7 @@ void loop() {
   env2 -= w2;
   digitalWrite(SQUARE, (i/200)%2 ? HIGH : LOW);
   digitalWrite(BEAT, i2>=0 ? HIGH : LOW);
+  //analogWrite(VCA, env2);
   i++; if (i == 400) i = 0;
   if (i2 >= 0) i2--;
   dacWrite(osc,env);
