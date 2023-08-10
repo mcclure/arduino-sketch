@@ -1,0 +1,1 @@
+scp mcc@nostromo.local:/Users/mcc/work/f/template-fpga/build_top_bin.h .
